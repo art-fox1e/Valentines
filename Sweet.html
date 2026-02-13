@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Valentine's Day❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(180deg, #fff5f7 0%, #ffeef2 50%, #fff0f3 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #5a3d44;
+        }
+
+        /* Экран загрузки */
+        .loader-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffd1dc 0%, #ffb3c1 50%, #ff8e9e 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        .loader-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-heart {
+            font-size: 100px;
+            animation: loaderPulse 1.2s ease-in-out infinite;
+            filter: drop-shadow(0 10px 30px rgba(255, 107, 138, 0.4));
+        }
+
+        @keyframes loaderPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .loader-text {
+            font-family: 'Merriweather', serif;
+            font-size: 1.5rem;
+            color: #fff;
+            margin-top: 30px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .loader-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .loader-bar {
+            height: 100%;
+            width: 0%;
+            background: #fff;
+            border-radius: 2px;
+            animation: loadProgress 15s linear forwards;
+        }
+
+        @keyframes loadProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Падающие сердечки (более нежные) */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ffb3c1;
+            font-size: 16px;
+            animation: fall linear infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Главный контейнер */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px 15px 40px;
+            text-align: center;
+        }
+
+        /* Заголовок */
+        .main-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.2rem;
+            color: #ff6b8a;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+            margin: 20px 0;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: 1.7rem;
+            color: #b86b7a;
+            margin-bottom: 20px;
+        }
+
+        /* Большое сердце */
+        .big-heart {
+            font-size: 80px;
+            display: inline-block;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin: 10px 0;
+            filter: drop-shadow(0 5px 15px rgba(255, 107, 138, 0.3));
+        }
+
+        .big-heart:active {
+            transform: scale(0.9);
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Таймер счастья */
+        .happiness-timer {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 179, 193, 0.4);
+            border-radius: 25px;
+            padding: 25px 15px;
+            margin: 25px 0;
+            box-shadow: 0 8px 32px rgba(255, 107, 138, 0.1);
+        }
+
+        .timer-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.4rem;
+            color: #ff6b8a;
+            margin-bottom: 10px;
+        }
+
+        .timer-subtitle {
+            font-size: 1.1rem;
+            color: #b86b7a;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .time-box {
+            background: linear-gradient(135deg, #fff0f3, #ffe4e9);
+            padding: 12px 8px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 179, 193, 0.3);
+            min-width: 65px;
+            box-shadow: 0 4px 15px rgba(255, 107, 138, 0.1);
+        }
+
+        .time-number {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #ff6b8a;
+            display: block;
+            font-family: 'Caveat', cursive;
+            line-height: 1;
+        }
+
+        .time-label {
+            font-size: 0.7rem;
+            color: #b86b7a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Карточки посланий */
+        .message-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 179, 193, 0.3);
+            border-radius: 25px;
+            padding: 25px 20px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(255, 107, 138, 0.08);
+        }
+
+        .message-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #7a5a60;
+            font-style: italic;
+        }
+
+        .highlight {
+            color: #ff6b8a;
+            font-weight: bold;
+        }
+
+        /* Блоки пожеланий */
+        .wishes-section {
+            margin: 30px 0;
+        }
+
+        .wishes-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.6rem;
+            color: #ff6b8a;
+            margin-bottom: 20px;
+        }
+
+        .wish-card {
+            background: linear-gradient(135deg, rgba(255,240,243,0.8), rgba(255,228,233,0.8));
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #ffb3c1;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .wish-card::before {
+            content: '💝';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            opacity: 0.3;
+        }
+
+        .wish-text {
+            font-size: 1rem;
+            color: #7a5a60;
+            line-height: 1.6;
+            padding-right: 40px;
+        }
+
+        .wish-author {
+            font-size: 0.8rem;
+            color: #b86b7a;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* Карусель с стрелками */
+        .carousel-section {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .carousel-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.6rem;
+            color: #ff6b8a;
+            margin-bottom: 20px;
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 50px;
+        }
+
+        .carousel-container {
+            width: 100%;
+            max-width: 300px;
+            height: 350px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 25px;
+            box-shadow: 0 10px 40px rgba(255, 107, 138, 0.2);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+            background: linear-gradient(135deg, #ffd1dc, #ffb3c1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .slide-photo {
+            width: 200px;
+            height: 250px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 3px dashed #ffb3c1;
+        }
+
+        .slide-caption {
+            margin-top: 15px;
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.9);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #ff6b8a;
+            font-weight: bold;
+        }
+
+        /* Стрелки */
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #ffb3c1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #ff6b8a;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .carousel-arrow:active {
+            transform: translateY(-50%) scale(0.9);
+            background: #ff6b8a;
+            color: #fff;
+        }
+
+        .carousel-arrow.prev {
+            left: 0;
+        }
+
+        .carousel-arrow.next {
+            right: 0;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 179, 193, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: #ff6b8a;
+            transform: scale(1.2);
+        }
+
+        /* Кнопка */
+        .love-button {
+            background: linear-gradient(135deg, #ff6b8a, #ff8e9e);
+            border: none;
+            padding: 18px 35px;
+            font-size: 1.2rem;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Pacifico', cursive;
+            box-shadow: 0 5px 20px rgba(255, 107, 138, 0.3);
+            transition: all 0.3s;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .love-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 10px rgba(255, 107, 138, 0.3);
+        }
+
+        /* Скрытое послание (по умолчанию скрыто) */
+        .hidden-message {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease;
+            margin-top: 0;
+        }
+
+        .hidden-message.show {
+            max-height: 600px;
+            margin-top: 20px;
+        }
+
+        .secret-content {
+            background: linear-gradient(135deg, rgba(255,240,243,0.9), rgba(255,228,233,0.9));
+            padding: 25px;
+            border-radius: 25px;
+            border: 2px solid rgba(255, 179, 193, 0.4);
+            text-align: left;
+        }
+
+        .secret-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.4rem;
+            color: #ff6b8a;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .secret-text {
+            font-size: 1rem;
+            color: #7a5a60;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .secret-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .secret-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #7a5a60;
+            font-size: 0.95rem;
+        }
+
+        .secret-list li::before {
+            content: '💖';
+            position: absolute;
+            left: 0;
+        }
+
+        /* Финальный блок */
+        .final-quote {
+            background: linear-gradient(135deg, rgba(255,214,220,0.6), rgba(255,195,205,0.6));
+            border-radius: 25px;
+            padding: 30px 20px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 179, 193, 0.3);
+        }
+
+        .quote-text {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            color: #7a5a60;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .quote-date {
+            font-size: 0.9rem;
+            color: #b86b7a;
+            font-style: italic;
+        }
+
+        /* Эффект частиц */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: particleFloat 1s ease-out forwards;
+            font-size: 20px;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Адаптация под очень маленькие экраны */
+        @media (max-width: 350px) {
+            .main-title { font-size: 1.8rem; }
+            .carousel-container { height: 300px; }
+            .slide-photo { width: 170px; height: 210px; }
+            .time-box { min-width: 55px; padding: 10px 5px; }
+            .time-number { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Экран загрузки -->
+    <div class="loader-screen" id="loader">
+        <div class="loader-heart">💖</div>
+        <div class="loader-text">Загружаю любовь...</div>
+        <div class="loader-progress">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <!-- Падающие сердечки -->
+    <div class="hearts-container" id="heartsContainer"></div>
+
+    <div class="container">
+        <!-- Заголовок -->
+        <div class="main-title">Happy Valentine's Day</div>
+        <div class="subtitle"> to the most beautiful woman in the world</div>
+        
+        <!-- Анимированное сердце -->
+        <div class="big-heart" onclick="createParticles(event)">❤️</div>
+
+        <!-- Таймер счастья -->
+        <div class="happiness-timer">
+            <div class="timer-title">Таймер моего счастья</div>
+            <div class="timer-subtitle">Примерно ✨</div>
+            <div class="countdown" id="happinessTimer">
+                <div class="time-box">
+                    <span class="time-number" id="days">0</span>
+                    <span class="time-label">Days</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-number" id="hours">00</span>
+                    <span class="time-label">Hours</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-number" id="minutes">00</span>
+                    <span class="time-label">Minutes</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-number" id="seconds">00</span>
+                    <span class="time-label">Seconds</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основное послание -->
+        <div class="message-card">
+            <p class="message-text">
+                В этот особенный день хочу сказать, что ты делаешь мою жизнь <span class="highlight">ярче</span>, 
+                <span class="highlight">теплее</span> и <span class="highlight">прекраснее</span>. 
+                Каждый момент рядом с тобой — это подарок, который я ценю больше всего на свете.
+            </p>
+        </div>
+
+        <!-- Блоки пожеланий -->
+        <div class="wishes-section">
+            <div class="wishes-title">Мои пожелания тебе</div>
+            
+            <div class="wish-card">
+                <div class="wish-text">Чтобы каждое утро начиналось с улыбки, а каждый вечер заканчивался в моих объятиях.</div>
+                <div class="wish-author">— ❤️</div>
+            </div>
+            
+            <div class="wish-card">
+                <div class="wish-text">Чтобы в твоих глазах всегда светилось счастье, а в сердце — любовь.</div>
+                <div class="wish-author">— Твой котик</div>
+            </div>
+            
+            <div class="wish-card">
+                <div class="wish-text">Чтобы все твои мечты сбывались, а я был рядом в каждом из них.</div>
+                <div class="wish-author">— С любовью</div>
+            </div>
+        </div>
+                
+        
+        <!-- Кнопка секретного послания -->
+        <button class="love-button" onclick="toggleMessage()">
+            Открыть секретное послание 💌
+        </button>
+
+        <div class="hidden-message" id="hiddenMessage">
+            <div class="secret-content">
+                <div class="secret-title">Только для тебя</div>
+                <div class="secret-text">
+                    Ты — моё самое прекрасное чудо. Каждый день с тобой — это новая глава нашей истории, полная нежности, понимания и счастья.
+                </div>
+                <ul class="secret-list">
+                    <li>Я люблю твою улыбку больше всего на свете</li>
+                    <li>Твой смех — моя любимая мелодия</li>
+                    <li>С тобой я чувствую себя дома</li>
+                    <li>Ты вдохновляешь меня быть лучше</li>
+                    <li>Я хочу провести с тобой всю жизнь</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Вторая кнопка секретного послания -->
+<button class="love-button" onclick="toggleMessage2()" style="background: linear-gradient(135deg, #ff8e9e, #ffb3c1);">
+    Открыть второе послание 💝
+</button>
+
+<div class="hidden-message" id="hiddenMessage2">
+    <div class="secret-content">
+        <!-- Встроенное YouTube видео -->
+<!-- Блок с большим сердцем-ссылкой -->
+<div class="video-heart-block" style="margin: 30px 0; text-align: center;">
+    <div style="font-family: 'Pacifico', cursive; font-size: 1.5rem; color: #ff6b8a; margin-bottom: 15px;">
+        У меня есть кое-что для тебя...
+    </div>
+    
+    <a href="https://www.youtube.com/watch?v=8Ct378DidlU" target="_blank" style="text-decoration: none; display: inline-block;">
+        <div style="font-family: 'Caveat', cursive; font-size: 1.3rem; color: #b86b7a; margin-bottom: 10px;">
+            Жми на сердечко! 👇
+        </div>
+        <div style="font-size: 100px; animation: heartbeat 1.5s ease-in-out infinite; filter: drop-shadow(0 5px 15px rgba(255, 107, 138, 0.4)); cursor: pointer; display: inline-block; transition: transform 0.3s;">
+            💖
+        </div>
+    </a>
+    
+</div>
+    </div>
+</div>
+
+        <!-- Финальная цитата -->
+        <div class="final-quote">
+            <div class="quote-text">
+                "Любовь — это не то, что ты ищешь,<br>
+                а то, что находит тебя,<br>
+                когда ты готов."
+            </div>
+            <div class="quote-date">Я нашёл тебя❤️</div>
+        </div>
+    </div>
+
+    <script>
+        // Экран загрузки (15 секунд)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        // Генерация падающих сердечек
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = ['❤️', '💖', '💕', '💗', '💝'][Math.floor(Math.random() * 5)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 4 + 3) + 's';
+            heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            container.appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 7000);
+        }
+
+        setInterval(createHearts, 400);
+
+        // Таймер счастья
+        function updateHappinessTimer() {
+            const startDate = new Date('2025-06-21T22:00:00');
+            const now = new Date();
+            const diff = now - startDate;
+            
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = days;
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            }
+        }
+
+        setInterval(updateHappinessTimer, 1000);
+        updateHappinessTimer();
+
+        // Карусель
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const totalSlides = slides.length;
+        const track = document.getElementById('carouselTrack');
+        const dotsContainer = document.getElementById('carouselDots');
+
+        // Создание точек
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot' + (i === 0 ? ' active' : '');
+            dot.onclick = () => goToSlide(i);
+            dotsContainer.appendChild(dot);
+        }
+
+        function updateCarousel() {
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Обновление точек
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function moveSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = totalSlides - 1;
+            if (currentSlide >= totalSlides) currentSlide = 0;
+            updateCarousel();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+
+        // Свайп для телефона
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const carouselContainer = document.querySelector('.carousel-container');
+
+        carouselContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        carouselContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) moveSlide(1);
+            if (touchEndX > touchStartX + 50) moveSlide(-1);
+        }
+
+        // Секретное послание (по умолчанию скрыто)
+        function toggleMessage() {
+            const msg = document.getElementById('hiddenMessage');
+            const btn = document.querySelector('.love-button');
+            
+            if (msg.classList.contains('show')) {
+                msg.classList.remove('show');
+                btn.textContent = 'Открыть секретное послание 💌';
+            } else {
+                msg.classList.add('show');
+                btn.textContent = 'Закрыть послание 🔒';
+                // Прокрутка к посланию
+                setTimeout(() => {
+                    msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        }
+
+        // Функция для второй кнопки
+function toggleMessage2() {
+    const msg = document.getElementById('hiddenMessage2');
+    const btn = event.target;
+    
+    if (msg.classList.contains('show')) {
+        msg.classList.remove('show');
+        btn.textContent = 'Открыть второе послание 💝';
+    } else {
+        msg.classList.add('show');
+        btn.textContent = 'Закрыть послание 🔒';
+        setTimeout(() => {
+            msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+}
+
+        // Эффект частиц
+        function createParticles(e) {
+            const colors = ['#ff6b8a', '#ffb3c1', '#ff8e9e', '#ffd1dc', '#ffc3d0'];
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.innerHTML = ['❤️', '💖', '✨', '💕'][Math.floor(Math.random() * 4)];
+                particle.style.left = e.touches ? e.touches[0].pageX : e.pageX + 'px';
+                particle.style.top = e.touches ? e.touches[0].pageY : e.pageY + 'px';
+                particle.style.color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.setProperty('--tx', (Math.random() - 0.5) * 150 + 'px');
+                particle.style.setProperty('--ty', (Math.random() - 0.5) * 150 + 'px');
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        // Двойной тап для сердца
+        let lastTap = 0;
+        document.querySelector('.big-heart').addEventListener('touchend', (e) => {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 500 && tapLength > 0) {
+                createParticles(e);
+            }
+            lastTap = currentTime;
+        });
+    </script>
+</body>
+</html>
